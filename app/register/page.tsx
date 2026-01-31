@@ -27,14 +27,13 @@ const Login: React.FC = () => {
   // Handlers
   const handleLogin = async (values: FormFieldProps) => {
     try {
-      const response = await apiService.post<User>("/login", null, values);
+      const response = await apiService.post<User>("/users", null, values);
 
       if (response.token) {
         setToken(response.token);
         setUserId(String(response.id));
+        router.push("/users");
       }
-
-      router.push("/users");
     } catch (error) {
       if (error instanceof Error) {
         alert(`Something went wrong during the login:\n${error.message}`);
@@ -70,7 +69,7 @@ const Login: React.FC = () => {
         </Form.Item>
         <Form.Item>
           <Button type="primary" htmlType="submit" className="login-button">
-            Login
+            Register
           </Button>
         </Form.Item>
       </Form>
