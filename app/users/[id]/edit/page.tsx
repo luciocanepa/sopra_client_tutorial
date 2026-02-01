@@ -25,7 +25,7 @@ const EditProfile: React.FC = () => {
   useEffect(() => {
     const fetchUser = async () => {
       if (!token) return;
-      const user: User = await apiService.get<User>(`/users/${id}`, token);
+      const user: User = await apiService.get<User>(`/users/${id}`);
       setUser(user);
       // Prepopulate form with user data
       form.setFieldsValue({
@@ -42,7 +42,7 @@ const EditProfile: React.FC = () => {
     try {
       const values = await form.validateFields();
       setLoading(true);
-      await apiService.put<User>(`/users/${id}`, token, {
+      await apiService.put<User>(`/users/${id}`, {
         username: values.username,
         name: values.name || null,
         bio: values.bio || null,

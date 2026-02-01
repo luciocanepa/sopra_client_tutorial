@@ -9,7 +9,26 @@ export class ApiService {
     this.baseURL = getApiDomain();
     this.defaultHeaders = {
       "Content-Type": "application/json",
-      "Access-Control-Allow-Origin": "*",
+    };
+  }
+
+  /**
+   * Retrieves the authentication token from localStorage and returns
+   * the headers object with Authorization Bearer token if available.
+   * @returns Headers object with Content-Type and optional Authorization.
+   */
+  private getHeaders(): HeadersInit {
+    let token: string | null = null;
+    if (typeof window !== "undefined") {
+      try {
+        token = JSON.parse(localStorage.getItem("token") || "null");
+      } catch {
+        token = null;
+      }
+    }
+    return {
+      ...this.defaultHeaders,
+      ...(token ? { "Authorization": `Bearer ${token}` } : {}),
     };
   }
 
@@ -60,16 +79,11 @@ export class ApiService {
    * @param endpoint - The API endpoint (e.g. "/users").
    * @returns JSON data of type T.
    */
-  public async get<T>(endpoint: string, token: string | null): Promise<T> {
+  public async get<T>(endpoint: string): Promise<T> {
     const url = `${this.baseURL}${endpoint}`;
-    // pass token if it is not null
-    const headers = {
-      ...this.defaultHeaders,
-      ...(token !== null ? { "token": token } : {}),
-    };
     const res = await fetch(url, {
       method: "GET",
-      headers,
+      headers: this.getHeaders(),
     });
     return this.processResponse<T>(
       res,
@@ -83,16 +97,11 @@ export class ApiService {
    * @param data - The payload to post.
    * @returns JSON data of type T.
    */
-  public async post<T>(endpoint: string, token: string | null, data: unknown): Promise<T> {
+  public async post<T>(endpoint: string, data: unknown): Promise<T> {
     const url = `${this.baseURL}${endpoint}`;
-    // pass token if it is not null
-    const headers = {
-      ...this.defaultHeaders,
-      ...(token !== null ? { "token": token } : {}),
-    };
     const res = await fetch(url, {
       method: "POST",
-      headers,
+      headers: this.getHeaders(),
       body: JSON.stringify(data),
     });
     return this.processResponse<T>(
@@ -107,16 +116,11 @@ export class ApiService {
    * @param data - The payload to update.
    * @returns JSON data of type T.
    */
-  public async put<T>(endpoint: string, token: string | null, data: unknown): Promise<T> {
+  public async put<T>(endpoint: string, data: unknown): Promise<T> {
     const url = `${this.baseURL}${endpoint}`;
-    // pass token if it is not null
-    const headers = {
-      ...this.defaultHeaders,
-      ...(token !== null ? { "token": token } : {}),
-    };
     const res = await fetch(url, {
       method: "PUT",
-      headers,
+      headers: this.getHeaders(),
       body: JSON.stringify(data),
     });
     return this.processResponse<T>(
@@ -130,16 +134,11 @@ export class ApiService {
    * @param endpoint - The API endpoint (e.g. "/users/123").
    * @returns JSON data of type T.
    */
-  public async delete<T>(endpoint: string, token: string | null): Promise<T> {
+  public async delete<T>(endpoint: string): Promise<T> {
     const url = `${this.baseURL}${endpoint}`;
-    // pass token if it is not null
-    const headers = {
-      ...this.defaultHeaders,
-      ...(token !== null ? { "token": token } : {}),
-    };
     const res = await fetch(url, {
       method: "DELETE",
-      headers,
+      headers: this.getHeaders(),
     });
     return this.processResponse<T>(
       res,

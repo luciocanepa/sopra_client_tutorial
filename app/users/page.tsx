@@ -54,7 +54,7 @@ const Dashboard: React.FC = () => {
   // Handlers
   const handleLogout = async (): Promise<void> => {
     try {
-      const response = await apiService.post("/logout", token, {});
+      await apiService.post("/logout", {});
     } catch (error) {
       if (error instanceof Error) {
         alert(`Something went wrong while logging out:\n${error.message}`);
@@ -72,10 +72,8 @@ const Dashboard: React.FC = () => {
     const fetchUsers = async () => {
       if (!token) return;
       try {
-        console.log("token", token);
-        const users: User[] = await apiService.get<User[]>("/users", token);
+        const users: User[] = await apiService.get<User[]>("/users");
         setUsers(users);
-        console.log("Fetched users:", users);
       } catch (error) {
         if (error instanceof Error) {
           alert(`Something went wrong while fetching users:\n${error.message}`);
@@ -87,7 +85,7 @@ const Dashboard: React.FC = () => {
 
     fetchUsers();
   }, [apiService, token]);
-
+  
   return (
     <div>
       <Card

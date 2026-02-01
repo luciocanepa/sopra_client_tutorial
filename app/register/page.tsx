@@ -27,7 +27,7 @@ const Login: React.FC = () => {
   // Handlers
   const handleLogin = async (values: FormFieldProps) => {
     try {
-      const response = await apiService.post<User>("/users", null, values);
+      const response = await apiService.post<User>("/users", values);
 
       if (response.token) {
         setToken(response.token);

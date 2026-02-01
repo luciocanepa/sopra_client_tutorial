@@ -31,7 +31,7 @@ const Profile: React.FC = () => {
   useEffect(() => {
     const fetchUser = async () => {
       if (!token) return;
-      const user: User = await apiService.get<User>(`/users/${id}`, token);
+      const user: User = await apiService.get<User>(`/users/${id}`);
       setUser(user);
     };
     fetchUser();
