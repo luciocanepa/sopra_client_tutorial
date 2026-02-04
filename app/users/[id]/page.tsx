@@ -4,7 +4,8 @@ import { useApi } from "@/hooks/useApi";
 import useLocalStorage from "@/hooks/useLocalStorage";
 import { User } from "@/types/user";
 import { useParams } from "next/navigation";
-import { Button, Card } from "antd";
+import { Button } from "antd";
+import CustomCardComponent from "@/components/CustomCardComponent";
 
 import React, { useEffect, useState } from "react";
 import { formatDate } from "@/utils/helper";
@@ -20,7 +21,7 @@ const Profile: React.FC = () => {
   const {
     value: userId,
   } = useLocalStorage<string>("userId", "");
-  
+
   const { id } = useParams();
   const router = useRouter();
   const isCurrentUser = userId === id;
@@ -36,26 +37,64 @@ const Profile: React.FC = () => {
     };
     fetchUser();
   }, [apiService, token, id]);
-  
-  const nameToDisplay = (user?.name ? user?.name : user?.username);
+
+  const userHeader = () => {
+    const nameToDisplay = user?.name ? user?.name : user?.username;
+    return (
+      <>
+        <p>{user?.id}</p>
+        <h2>{nameToDisplay}</h2>
+      </>
+    );
+  };
+
+  const userBody = () => (
+    <>
+      <p>
+        <span>Username:</span> {user?.username}
+      </p>
+      <p>
+        <span>Status:</span> {user?.status}
+      </p>
+      <p>
+        <span>Bio:</span> {user?.bio}
+      </p>
+      <p>
+        <span>Creation Date:</span> {formatDate(user?.creationDate)}
+      </p>
+    </>
+  );
+
+  const userFooter = () => (
+    <>
+      <Button type="default" onClick={() => router.push(`/users`)}>
+        Back to users
+      </Button>
+      {isCurrentUser && (
+        <Button
+          type="primary"
+          onClick={() => router.push(`/users/${user?.id}/edit`)}
+        >
+          Edit
+        </Button>
+      )}
+    </>
+  );
 
   return (
-    <div>
-      <Card title={nameToDisplay}>
-        <div>
-          <div>
-            <p><span>Username:</span> {user?.username}</p>
-            <p><span>Status:</span> {user?.status}</p>
-            <p><span>Bio:</span> {user?.bio}</p>
-            <p><span>Creation Date:</span> {formatDate(user?.creationDate)}</p>
-          </div>
-
-          <div>
-          <Button type="default" onClick={() => router.push(`/users`)}>Back to users</Button>
-          {isCurrentUser && <Button type="primary" onClick={() => router.push(`/users/${user?.id}/edit`)}>Edit</Button>}
-        </div>
-        </div>
-      </Card>
+    <div
+      style={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        height: "100vh",
+      }}
+    >
+      <CustomCardComponent
+        header={userHeader()}
+        body={userBody()}
+        footer={userFooter()}
+      />
     </div>
   );
 };
