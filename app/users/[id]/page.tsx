@@ -39,12 +39,14 @@ const Profile: React.FC = () => {
   }, [apiService, token, id]);
 
   const userHeader = () => {
-    const nameToDisplay = user?.name ? user?.name : user?.username;
+    // MODIFIED LINE: Logic changed to prioritize Username over Name
+    const nameToDisplay = user?.username || user?.name || "Unknown User";
     return (
-      <>
-        <p>{user?.id}</p>
-        <h2>{nameToDisplay}</h2>
-      </>
+      <div className="header-container">
+        {/* MODIFIED LINE: Wrapped ID in a span and changed tag to h3 */}
+        <span>ID: {user?.id}</span>
+        <h3>{nameToDisplay}</h3>
+      </div>
     );
   };
 
